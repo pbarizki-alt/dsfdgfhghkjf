@@ -2,8 +2,24 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>🍢 Angkringan POS</title>
+
+<!-- ================= PWA META ================= -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d0d12">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Aplikasi kasir Angkringan: kasir, kasbon, rekap penjualan, pengeluaran, dan kelola menu. Bekerja offline.">
+<meta name="application-name" content="Angkringan POS">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Angkringan">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<!-- ============================================ -->
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,7 +36,21 @@
     <button class="nav-btn" data-tab="pengeluaran">Pengeluaran</button>
     <button class="nav-btn" data-tab="menu">Kelola Menu</button>
   </nav>
+
+  <!-- ===== PWA: aksi kanan topbar ===== -->
+  <div class="topbar-actions">
+    <span class="net-pill" id="netPill" hidden>⚠️ Offline</span>
+    <button class="btn btn-sm btn-install" id="btnInstall" hidden>⬇️ Pasang App</button>
+  </div>
 </header>
+
+<!-- ===== PWA: banner update ===== -->
+<div class="update-banner" id="updateBanner" hidden>
+  <span>🚀 Versi baru Angkringan POS tersedia.</span>
+  <span class="spacer"></span>
+  <button class="btn btn-sm btn-primary" id="btnReload">Muat Ulang</button>
+  <button class="btn btn-sm btn-ghost" id="btnDismissUpdate">Nanti</button>
+</div>
 
 <main>
 
@@ -64,7 +94,7 @@
 
         <div id="cashBlock">
           <div class="pay-label">Uang Diterima</div>
-          <input type="number" id="cashInput" class="input" placeholder="0" min="0" step="500">
+          <input type="number" id="cashInput" class="input" placeholder="0" min="0" step="500" inputmode="numeric">
           <div class="change-row" id="changeRow">
             <span>Kembalian</span>
             <strong id="changeDisplay">Rp0</strong>
@@ -137,7 +167,7 @@
         <option value="rokok">🚬 Rokok</option>
       </select>
       <input type="text" id="expDesc" class="input" placeholder="Keterangan (belanja, gas, dll)" required>
-      <input type="number" id="expAmount" class="input" placeholder="Jumlah (Rp)" required min="0">
+      <input type="number" id="expAmount" class="input" placeholder="Jumlah (Rp)" required min="0" inputmode="numeric">
       <button type="submit" class="btn btn-primary">Tambah</button>
     </form>
     <div id="expList" class="list"></div>
@@ -150,7 +180,7 @@
       <input type="hidden" id="menuId">
       <input type="text" id="menuName" class="input" placeholder="Nama item" required>
       <select id="menuCat" class="input" required></select>
-      <input type="number" id="menuPrice" class="input" placeholder="Harga (Rp)" required min="0">
+      <input type="number" id="menuPrice" class="input" placeholder="Harga (Rp)" required min="0" inputmode="numeric">
       <button type="submit" class="btn btn-primary" id="menuSubmitBtn">Tambah</button>
       <button type="button" class="btn btn-ghost" id="menuCancelBtn" style="display:none">Batal</button>
     </form>
