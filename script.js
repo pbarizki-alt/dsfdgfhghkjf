@@ -965,3 +965,87 @@ document.getElementById('menuList').addEventListener('click', e => {
     if (!state.customEnd)   state.customEnd   = todayStr();
   }
 })();
+
+/* =====================================================
+   PWA — Service Worker & Install Prompt
+   ===================================================== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('SW terdaftar:', reg.scope);
+
+        // Cek update
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          nw.addEventListener('statechange', () => {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateBanner();
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('SW gagal:', err));
+  });
+
+  // Reload saat SW baru aktif
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
+}
+
+/* ===== Banner update ===== */
+function showUpdateBanner() {
+  const b = document.getElementById('updateBanner');
+  if (!b) return;
+  b.hidden = false;
+}
+document.getElementById('btnReload')?.addEventListener('click', () => {
+  navigator.serviceWorker.getRegistration().then(reg => {
+    reg?.waiting?.postMessage('SKIP_WAITING');
+  });
+});
+document.getElementById('btnDismissUpdate')?.addEventListener('click', () => {
+  document.getElementById('updateBanner').hidden = true;
+});
+
+/* ===== Install prompt (Android/Chrome) ===== */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('btnInstall');
+  if (btn) btn.hidden = false;
+});
+
+document.getElementById('btnInstall')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btnInstall');
+  if (!deferredPrompt) {
+    alert('Untuk memasang:\n\n• Android Chrome: menu ⋮ → "Install app" / "Tambahkan ke layar utama"\n• iPhone Safari: tombol Share → "Tambahkan ke Layar Utama"');
+    return;
+  }
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install:', outcome);
+  deferredPrompt = null;
+  if (btn) btn.hidden = true;
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('App terpasang');
+  const btn = document.getElementById('btnInstall');
+  if (btn) btn.hidden = true;
+});
+
+/* ===== Indikator offline ===== */
+function updateNetPill() {
+  const pill = document.getElementById('netPill');
+  if (!pill) return;
+  pill.hidden = navigator.onLine;
+}
+window.addEventListener('online', updateNetPill);
+window.addEventListener('offline', updateNetPill);
+updateNetPill();

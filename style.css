@@ -738,3 +738,48 @@ main {
   .brand { font-size: 1rem; }
   .nav-btn { padding: 7px 12px; font-size: .82rem; }
 }
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-install {
+  background: var(--success);
+  color: #052e16;
+  font-weight: 700;
+}
+.btn-install:hover { background: var(--success-2); color: #fff; }
+
+.net-pill {
+  background: rgba(239,68,68,.15);
+  color: var(--danger);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.update-banner {
+  position: sticky;
+  top: 68px;
+  z-index: 99;
+  margin: 0 24px 12px;
+  background: rgba(59,130,246,.15);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.update-banner .spacer { flex: 1; }
+
+@media (max-width: 900px) {
+  .update-banner { margin: 0 16px 12px; top: 60px; }
+  .topbar-actions { width: 100%; justify-content: flex-end; }
+}
